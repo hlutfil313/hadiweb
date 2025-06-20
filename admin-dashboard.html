@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - UniEats</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"/>
+</head>
+<body>
+  <!-- Header Section -->
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <div class="logo">
+          <h1>UniEats</h1>
+        </div>
+        <nav>
+          <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="admin-dashboard.html" class="active">Admin Dashboard</a></li>
+            <li><a href="food-spots.html">Food Spots</a></li>
+            <li><a href="login.html" id="login-link">Login</a></li>
+            <li><a href="#" id="logout-link" style="display:none;">Logout</a></li>
+          </ul>
+          <div class="mobile-toggle">
+            <i class="fas fa-bars"></i>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <div class="dashboard">
+    <div class="dashboard-content">
+      <div class="dashboard-section active" id="admin-dashboard-section">
+        <div class="dashboard-header">
+          <h2 class="dashboard-title">Admin Restaurant Management</h2>
+        </div>
+        <!-- Restaurant Selection Dropdown -->
+        <section class="restaurant-select-section">
+          <label for="restaurant-select"><strong>Select Restaurant to Edit:</strong></label>
+          <select id="restaurant-select">
+            <option value="">-- Select a Restaurant --</option>
+          </select>
+          <button id="edit-selected-restaurant" class="btn btn-small" disabled>Edit Selected</button>
+        </section>
+        <!-- Add Restaurant Form -->
+        <section class="add-restaurant-section">
+          <h3>Add New Restaurant</h3>
+          <form id="add-restaurant-form">
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+              <label for="budget">Budget</label>
+              <select id="budget" name="budget" required>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="date">Date (e.g., Mon-Friday)</label>
+              <input type="text" id="date" name="date" required>
+            </div>
+            <div class="form-group">
+              <label for="description">Description</label>
+              <textarea id="description" name="description" required></textarea>
+            </div>
+            <div class="form-group">
+              <label for="hours">Hours (e.g., 01.00-00.59)</label>
+              <input type="text" id="hours" name="hours" required>
+            </div>
+            <div class="form-group">
+              <label for="image">Image URL</label>
+              <input type="text" id="image" name="image" required>
+            </div>
+            <div class="form-group">
+              <label for="location">Location</label>
+              <input type="text" id="location" name="location" required>
+            </div>
+            <div class="form-group">
+              <label for="type">Type</label>
+              <select id="type" name="type" required>
+                <option value="Cafe">Cafe</option>
+                <option value="Fast Food">Fast Food</option>
+                <option value="International">International</option>
+                <option value="Healthy">Healthy</option>
+                <option value="Cultural">Cultural</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="priceRange">Price Range</label>
+              <input type="text" id="priceRange" name="priceRange" required>
+            </div>
+            <button type="submit" class="btn">Add Restaurant</button>
+            <div id="add-restaurant-message"></div>
+          </form>
+        </section>
+        <!-- Restaurant List -->
+        <section class="restaurant-list-section">
+          <h3>All Restaurants</h3>
+          <div id="restaurant-list"></div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Restaurant Modal -->
+  <div class="modal" id="edit-restaurant-modal" style="display:none;">
+    <div class="modal-content">
+      <span class="close-modal" id="close-edit-modal">&times;</span>
+      <h3>Edit Restaurant</h3>
+      <form id="edit-restaurant-form">
+        <input type="hidden" id="edit-restaurant-id">
+        <div class="form-group">
+          <label for="edit-name">Name</label>
+          <input type="text" id="edit-name" name="edit-name" required>
+        </div>
+        <div class="form-group">
+          <label for="edit-budget">Budget</label>
+          <select id="edit-budget" name="edit-budget" required>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="edit-date">Date (e.g., Mon-Friday)</label>
+          <input type="text" id="edit-date" name="edit-date" required>
+        </div>
+        <div class="form-group">
+          <label for="edit-description">Description</label>
+          <textarea id="edit-description" name="edit-description" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="edit-hours">Hours (e.g., 01.00-00.59)</label>
+          <input type="text" id="edit-hours" name="edit-hours" required>
+        </div>
+        <div class="form-group">
+          <label for="edit-image">Image URL</label>
+          <input type="text" id="edit-image" name="edit-image" required>
+        </div>
+        <div class="form-group">
+          <label for="edit-location">Location</label>
+          <input type="text" id="edit-location" name="edit-location" required>
+        </div>
+        <div class="form-group">
+          <label for="edit-type">Type</label>
+          <select id="edit-type" name="edit-type" required>
+            <option value="Cafe">Cafe</option>
+            <option value="Fast Food">Fast Food</option>
+            <option value="International">International</option>
+            <option value="Healthy">Healthy</option>
+            <option value="Cultural">Cultural</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="edit-priceRange">Price Range</label>
+          <input type="text" id="edit-priceRange" name="edit-priceRange" required>
+        </div>
+        <button type="submit" class="btn">Save Changes</button>
+        <div id="edit-restaurant-message"></div>
+      </form>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-column">
+          <h3>UniEats</h3>
+          <p>The ultimate campus food discovery platform connecting students to tasty, affordable meals.</p>
+          <div class="social-links">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-tiktok"></i></a>
+          </div>
+        </div>
+        <div class="footer-column">
+          <h3>Quick Links</h3>
+          <ul class="footer-links">
+            <li><a href="#">Home</a></li>
+            <li><a href="food-spots.html">Food Spots</a></li>
+            <li><a href="food-spots.html">Reviews</a></li>
+            <li><a href="#deals">Deals</a></li>
+            <li><a href="#about">About</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h3>Contact Us</h3>
+          <ul class="footer-links">
+            <li><a href="mailto:info@unieats.com">info@unieats.com</a></li>
+            <li><a href="tel:+60123456789">+60 12 345 6789</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="copyright">
+        <p class="creators">Created by <span>Rifli Faizullah</span>, <span>Lutfil Hadi</span>, and <span>Dhafa Alif</span></p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-init.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    // Only allow access for admin users
+    document.addEventListener('DOMContentLoaded', async function() {
+      const user = JSON.parse(localStorage.getItem('loggedInUser'));
+      if (!user || user.role !== 'admin') {
+        document.body.innerHTML = '<h2 style="color:red;text-align:center;margin:2em 0;">You are not authorized to access this page.</h2>';
+        return;
+      }
+      // Add Restaurant
+      const addRestaurantForm = document.getElementById('add-restaurant-form');
+      const addRestaurantMessage = document.getElementById('add-restaurant-message');
+      addRestaurantForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        addRestaurantMessage.textContent = '';
+        const data = {
+          name: this.name.value,
+          budget: this.budget.value,
+          date: this.date.value,
+          description: this.description.value,
+          hours: this.hours.value,
+          image: this.image.value,
+          location: this.location.value,
+          type: this.type.value,
+          priceRange: this.priceRange.value,
+          ratings: { average: 0, count: 0 },
+          menu: [],
+          reviews: []
+        };
+        try {
+          // Get max id
+          const snapshot = await window.db.collection('restaurants').orderBy('id', 'desc').limit(1).get();
+          let newId = 1;
+          if (!snapshot.empty) {
+            newId = (snapshot.docs[0].data().id || 0) + 1;
+          }
+          data.id = newId;
+          await window.db.collection('restaurants').add(data);
+          addRestaurantMessage.textContent = 'Restaurant added successfully!';
+          addRestaurantForm.reset();
+          loadRestaurants();
+        } catch (err) {
+          addRestaurantMessage.textContent = 'Error adding restaurant: ' + err.message;
+        }
+      });
+      // Load and display all restaurants
+      async function loadRestaurants() {
+        const list = document.getElementById('restaurant-list');
+        list.innerHTML = '<div class="loading">Loading restaurants...</div>';
+        const snapshot = await window.db.collection('restaurants').orderBy('id').get();
+        if (snapshot.empty) {
+          list.innerHTML = '<div class="no-results">No restaurants found.</div>';
+          return;
+        }
+        let html = '<table class="restaurant-table"><thead><tr><th>Name</th><th>Location</th><th>Type</th><th>Menu</th><th>Actions</th></tr></thead><tbody>';
+        snapshot.forEach(doc => {
+          const r = doc.data();
+          html += `<tr>
+            <td>${r.name}</td>
+            <td>${r.location}</td>
+            <td>${r.type}</td>
+            <td><button class="btn btn-small btn-menu" data-id="${doc.id}">Manage Menu</button></td>
+            <td><button class="btn btn-small btn-edit" data-id="${doc.id}">Edit</button> <button class="btn btn-small btn-delete" data-id="${doc.id}">Delete</button></td>
+          </tr>`;
+        });
+        html += '</tbody></table>';
+        list.innerHTML = html;
+        // Add event listeners for menu, edit, delete
+        document.querySelectorAll('.btn-menu').forEach(btn => {
+          btn.addEventListener('click', () => manageMenu(btn.dataset.id));
+        });
+        document.querySelectorAll('.btn-edit').forEach(btn => {
+          btn.addEventListener('click', () => editRestaurant(btn.dataset.id));
+        });
+        document.querySelectorAll('.btn-delete').forEach(btn => {
+          btn.addEventListener('click', () => deleteRestaurant(btn.dataset.id));
+        });
+        await populateRestaurantDropdown();
+      }
+      // Manage Menu (basic modal or inline for now)
+      function manageMenu(restaurantId) {
+        alert('Menu management for restaurant ID: ' + restaurantId + '\n(Implement modal or inline editor as needed)');
+      }
+      // Edit Restaurant (show modal, prefill, save)
+      function editRestaurant(restaurantId) {
+        window.db.collection('restaurants').doc(restaurantId).get().then(doc => {
+          if (!doc.exists) return;
+          const r = doc.data();
+          document.getElementById('edit-restaurant-id').value = restaurantId;
+          document.getElementById('edit-name').value = r.name;
+          document.getElementById('edit-budget').value = r.budget;
+          document.getElementById('edit-date').value = r.date;
+          document.getElementById('edit-description').value = r.description;
+          document.getElementById('edit-hours').value = r.hours;
+          document.getElementById('edit-image').value = r.image;
+          document.getElementById('edit-location').value = r.location;
+          document.getElementById('edit-type').value = r.type;
+          document.getElementById('edit-priceRange').value = r.priceRange;
+          document.getElementById('edit-restaurant-message').textContent = '';
+          document.getElementById('edit-restaurant-modal').style.display = 'block';
+        });
+      }
+      // Close modal
+      document.getElementById('close-edit-modal').onclick = function() {
+        document.getElementById('edit-restaurant-modal').style.display = 'none';
+      };
+      window.onclick = function(event) {
+        if (event.target === document.getElementById('edit-restaurant-modal')) {
+          document.getElementById('edit-restaurant-modal').style.display = 'none';
+        }
+      };
+      // Save changes
+      document.getElementById('edit-restaurant-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const id = document.getElementById('edit-restaurant-id').value;
+        const data = {
+          name: document.getElementById('edit-name').value,
+          budget: document.getElementById('edit-budget').value,
+          date: document.getElementById('edit-date').value,
+          description: document.getElementById('edit-description').value,
+          hours: document.getElementById('edit-hours').value,
+          image: document.getElementById('edit-image').value,
+          location: document.getElementById('edit-location').value,
+          type: document.getElementById('edit-type').value,
+          priceRange: document.getElementById('edit-priceRange').value
+        };
+        try {
+          await window.db.collection('restaurants').doc(id).update(data);
+          document.getElementById('edit-restaurant-message').textContent = 'Changes saved!';
+          setTimeout(() => {
+            document.getElementById('edit-restaurant-modal').style.display = 'none';
+            loadRestaurants();
+          }, 800);
+        } catch (err) {
+          document.getElementById('edit-restaurant-message').textContent = 'Error: ' + err.message;
+        }
+      });
+      // Delete Restaurant
+      async function deleteRestaurant(restaurantId) {
+        if (!confirm('Are you sure you want to delete this restaurant?')) return;
+        await window.db.collection('restaurants').doc(restaurantId).delete();
+        loadRestaurants();
+      }
+      // Restaurant selection dropdown logic
+      let restaurantDocs = [];
+      async function populateRestaurantDropdown() {
+        const select = document.getElementById('restaurant-select');
+        select.innerHTML = '<option value="">-- Select a Restaurant --</option>';
+        const snapshot = await window.db.collection('restaurants').orderBy('name').get();
+        restaurantDocs = [];
+        snapshot.forEach(doc => {
+          restaurantDocs.push({ id: doc.id, ...doc.data() });
+          const option = document.createElement('option');
+          option.value = doc.id;
+          option.textContent = doc.data().name;
+          select.appendChild(option);
+        });
+      }
+      document.getElementById('restaurant-select').addEventListener('change', function() {
+        document.getElementById('edit-selected-restaurant').disabled = !this.value;
+      });
+      document.getElementById('edit-selected-restaurant').addEventListener('click', function() {
+        const id = document.getElementById('restaurant-select').value;
+        if (id) editRestaurant(id);
+      });
+      // On page load, populate dropdown
+      populateRestaurantDropdown();
+    });
+  </script>
+</body>
+</html> 

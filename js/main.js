@@ -125,8 +125,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Only run if homepage containers exist
     const featuredContainer = document.getElementById('featured-spots-container');
     const lateNightContainer = document.getElementById('late-night-container');
-    const studentDealsContainer = document.getElementById('student-deals-container');
-    if (featuredContainer && lateNightContainer && studentDealsContainer && window.db) {
+    const brokeStudentDealsContainer = document.getElementById('broke-student-deals-container');
+    if (featuredContainer && lateNightContainer && brokeStudentDealsContainer && window.db) {
         db.collection('restaurants').get().then(snapshot => {
             const restaurants = snapshot.docs.map(doc => doc.data());
             // Helper to pick N random
@@ -171,12 +171,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 </div>
             `).join('');
-            // Student Deals: 3 random, show random discount
+            // Broke Student Deals: 3 random, show random discount
             const discounts = [3, 5, 7];
-            const studentDeals = pickRandom(restaurants, 3);
-            studentDealsContainer.innerHTML = studentDeals.length === 0 ? '<div class="no-results">No restaurants at the moment.</div>' : studentDeals.map((r, i) => `
+            const brokeStudentDeals = pickRandom(restaurants, 3);
+            brokeStudentDealsContainer.innerHTML = brokeStudentDeals.length === 0 ? '<div class="no-results">No restaurants at the moment.</div>' : brokeStudentDeals.map((r, i) => `
                 <div class="deal-card">
-                    <div class="deal-tag">STUDENT DEAL</div>
+                    <div class="deal-tag">BROKE STUDENT DEAL</div>
                     <div class="deal-info">
                         <h3>${r.name}</h3>
                         <p class="deal-location">${r.location || ''}</p>

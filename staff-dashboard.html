@@ -108,6 +108,63 @@
         <div id="menu-items-list"></div>
       </div>
     </div>
+
+    <!-- Staff Edit Restaurant Info Section -->
+    <div class="dashboard-section" id="edit-restaurant-section" style="display:none;">
+      <div class="dashboard-header">
+        <h2 class="dashboard-title">Edit Your Restaurant Info</h2>
+      </div>
+      <form id="edit-restaurant-form">
+        <div class="form-group">
+          <label for="edit-name">Name</label>
+          <input type="text" id="edit-name" name="edit-name" required>
+        </div>
+        <div class="form-group">
+          <label for="edit-budget">Budget</label>
+          <select id="edit-budget" name="edit-budget" required>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="edit-date">Date (e.g., Mon-Friday)</label>
+          <input type="text" id="edit-date" name="edit-date" required>
+        </div>
+        <div class="form-group">
+          <label for="edit-description">Description</label>
+          <textarea id="edit-description" name="edit-description" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="edit-hours">Hours (e.g., 01.00-00.59)</label>
+          <input type="text" id="edit-hours" name="edit-hours" required>
+        </div>
+        <div class="form-group">
+          <label for="edit-image">Image URL</label>
+          <input type="text" id="edit-image" name="edit-image" required>
+        </div>
+        <div class="form-group">
+          <label for="edit-location">Location</label>
+          <input type="text" id="edit-location" name="edit-location" required>
+        </div>
+        <div class="form-group">
+          <label for="edit-type">Type</label>
+          <select id="edit-type" name="edit-type" required>
+            <option value="Cafe">Cafe</option>
+            <option value="Fast Food">Fast Food</option>
+            <option value="International">International</option>
+            <option value="Healthy">Healthy</option>
+            <option value="Cultural">Cultural</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="edit-priceRange">Price Range</label>
+          <input type="text" id="edit-priceRange" name="edit-priceRange" required>
+        </div>
+        <button type="submit" class="btn">Save Changes</button>
+        <div id="edit-restaurant-message"></div>
+      </form>
+    </div>
   </div>
 </div>
 
@@ -210,7 +267,81 @@
   const db = firebase.firestore();
   const storage = firebase.storage();
 
-  const restaurantDocId = "7jKpjLF1ceWABjyO1S8y"; // ← YOUR DOCUMENT ID
+  // --- STAFF DASHBOARD LOGIC ---
+  // Only allow staff to manage their assigned restaurant
+  document.addEventListener('DOMContentLoaded', async function() {
+    const user = JSON.parse(localStorage.getItem('loggedInUser'));
+    if (!user || (user.role !== 'staff' && user.role !== 'admin')) {
+      document.body.innerHTML = '<h2 style="color:red;text-align:center;margin:2em 0;">You are not authorized to access this page.</h2>';
+      return;
+    }
+    // Fetch assignedRestaurantId from Firestore
+    let assignedRestaurantId = null;
+    if (user.role === 'admin') {
+      // For admin, allow selection of any restaurant (optional: you can add a dropdown for admin)
+      // For now, show a message or allow admin to use the page as staff for a specific restaurant
+      // You can expand this logic as needed
+      assignedRestaurantId = null;
+      // Optionally, prompt admin to select a restaurant to manage
+    } else {
+      const userDoc = await window.db.collection('users').doc(user.uid).get();
+      assignedRestaurantId = userDoc.exists ? userDoc.data().assignedRestaurantId : null;
+      if (!assignedRestaurantId) {
+        document.body.innerHTML = '<h2 style="color:red;text-align:center;margin:2em 0;">No restaurant assigned. Please contact admin.</h2>';
+        return;
+      }
+    }
+    // Hide add restaurant section if present
+    const addSection = document.querySelector('.add-restaurant-section');
+    if (addSection) addSection.style.display = 'none';
+    // Only show menu management for assigned restaurant
+    // (Reuse your menu management code, but load data for assignedRestaurantId)
+    // ... (rest of your menu management code, but use assignedRestaurantId instead of a hardcoded doc ID)
+
+    // After assignedRestaurantId is loaded and checked
+    // Load restaurant data and prefill edit form
+    const editSection = document.getElementById('edit-restaurant-section');
+    let currentRestaurant = null;
+    window.db.collection('restaurants').doc(assignedRestaurantId).get().then(doc => {
+      if (!doc.exists) return;
+      currentRestaurant = doc;
+      const r = doc.data();
+      editSection.style.display = 'block';
+      document.getElementById('edit-name').value = r.name;
+      document.getElementById('edit-budget').value = r.budget;
+      document.getElementById('edit-date').value = r.date;
+      document.getElementById('edit-description').value = r.description;
+      document.getElementById('edit-hours').value = r.hours;
+      document.getElementById('edit-image').value = r.image;
+      document.getElementById('edit-location').value = r.location;
+      document.getElementById('edit-type').value = r.type;
+      document.getElementById('edit-priceRange').value = r.priceRange;
+    });
+    // Save restaurant info changes
+    document.getElementById('edit-restaurant-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const data = {
+        name: document.getElementById('edit-name').value,
+        budget: document.getElementById('edit-budget').value,
+        date: document.getElementById('edit-date').value,
+        description: document.getElementById('edit-description').value,
+        hours: document.getElementById('edit-hours').value,
+        image: document.getElementById('edit-image').value,
+        location: document.getElementById('edit-location').value,
+        type: document.getElementById('edit-type').value,
+        priceRange: document.getElementById('edit-priceRange').value
+      };
+      try {
+        await window.db.collection('restaurants').doc(assignedRestaurantId).update(data);
+        document.getElementById('edit-restaurant-message').textContent = 'Changes saved!';
+      } catch (err) {
+        document.getElementById('edit-restaurant-message').textContent = 'Error: ' + err.message;
+      }
+    });
+    // Menu management: allow edit/delete for menu items
+    // (Assume menu is an array in the restaurant doc)
+    // ... existing menu management code, but only for currentRestaurant ...
+  });
 
   let currentEditIndex = null;
 

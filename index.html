@@ -83,14 +83,14 @@
     <section id="deals" class="deals">
         <div class="container">
             <div class="section-heading">
-                <h2>Student Deals</h2>
-                <p>Today's best offers for budget-conscious students</p>
+                <h2>Broke Student Deals</h2>
+                <p>Today's best offers for broke students</p>
             </div>
-            <div class="deals-container" id="student-deals-container">
-                <!-- Dynamic student deals will be loaded here -->
+            <div class="deals-container" id="broke-student-deals-container">
+                <!-- Dynamic broke student deals will be loaded here -->
             </div>
             <div class="more-deals">
-                <a href="food-spots.html" class="btn">View All Deals</a>
+                <a href="food-spots.html" class="btn">View All Broke Student Deals</a>
             </div>
         </div>
     </section>
@@ -177,5 +177,19 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
     <script src="js/firebase-init.js"></script>
     <script src="js/main.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const user = JSON.parse(localStorage.getItem('loggedInUser'));
+        if (user && user.role === 'admin') {
+          const navLinks = document.querySelector('.nav-links');
+          if (navLinks && !document.getElementById('admin-dashboard-link')) {
+            const adminLink = document.createElement('li');
+            adminLink.id = 'admin-dashboard-link';
+            adminLink.innerHTML = '<a href="admin-dashboard.html">Admin Dashboard</a>';
+            navLinks.appendChild(adminLink);
+          }
+        }
+      });
+    </script>
 </body>
 </html>
